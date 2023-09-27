@@ -3,14 +3,6 @@
 #include <limits>
 #include <algorithm>
 
-//Pauses program flow until enter key pressed
-void pause() {
-    std::cout << "\nPress any Enter to continue.";
-    std::cin.clear();
-    std::cin.sync();
-    std::cin.get();
-}
-
 //Checks for valid input of an integer
 int valid_integer()
 {
@@ -138,7 +130,7 @@ void process_user_inputs() {
                     user_numbers_v.push_back(user_numbers_item);
                 }
                 std::cout << "\nNumbers added successfully!" << std::endl;
-                pause();
+                std::cout << "\n---------------------------------------" << std::endl;
             }
 
             //Prints out the average of the numbers in the list
@@ -201,7 +193,7 @@ void process_user_inputs() {
                 if (user_selection == "y" || user_selection == "Y") {
                     user_numbers_v.clear();
                     std::cout << "\nList successfully cleared!" << std::endl;
-                    pause();
+                    std::cout << "\n---------------------------------------" << std::endl;
                 }
                 else if (user_selection == "n" || user_selection == "N") {
                     continue;
@@ -220,6 +212,5 @@ void process_user_inputs() {
 int main() {
     process_user_inputs();
     std::cout << "\nGoodbye!" << std::endl;
-    pause();
     return 0;
 }
