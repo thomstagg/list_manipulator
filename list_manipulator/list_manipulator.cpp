@@ -40,8 +40,8 @@ std::string valid_menu_choice() {
 }
 
 //checks for valid response
-std::string valid_yes_no_quit() {
-    std::string const valid_options("yYqQnN");
+std::string valid_continue() {
+    std::string const valid_options("yYnN");
     std::string input{};
 
     std::cin >> input;
@@ -55,7 +55,7 @@ std::string valid_yes_no_quit() {
 }
 
 //adds ordinal suffix e.g. rd or th to numbers
-const char* ordinal_suffix(int n)
+const char* ordinal_suffix(const int n)
 {
     static constexpr char suffixes[][3] = { "th", "st", "nd", "rd" };
     auto ord = n % 100;
@@ -71,12 +71,12 @@ void print_menu() {
     std::cout << "\n--------------------------------------------" << std::endl;
     std::cout << "--------------------------------------------" << std::endl;
     std::cout << "||                                        ||" << std::endl;
-    std::cout << "||    P - Print numbers                   ||" << std::endl;
-    std::cout << "||    A - Add a number                    ||" << std::endl;
-    std::cout << "||    M - Display mean of the numbers     ||" << std::endl;
+    std::cout << "||    A - Add numbers to list             ||" << std::endl;
+    std::cout << "||    P - Print full list                 ||" << std::endl;
+    std::cout << "||    M - Display average number          ||" << std::endl;
     std::cout << "||    S - Display the smallest number     ||" << std::endl;
     std::cout << "||    L - Display the largest number      ||" << std::endl;
-    std::cout << "||    C - Clear all numbers               ||" << std::endl;
+    std::cout << "||    C - Clear list                      ||" << std::endl;
     std::cout << "||    Q - Quit program                    ||" << std::endl;
     std::cout << "||                                        ||" << std::endl;
     std::cout << "-------------------------------------------" << std::endl;
@@ -84,12 +84,12 @@ void print_menu() {
     std::cout << "\nEnter your choice : ";
 }
 
-bool quit()
+bool cont()
 {
     std::string user_selection{};
     bool to_quit{true};
-    std::cout << "\nPress 'Y' to continue or press 'Q' to quit : ";
-    user_selection = valid_yes_no_quit();
+    std::cout << "\nPress 'Y' to continue : ";
+    user_selection = valid_continue();
     if (user_selection == "y" || user_selection == "Y") {
         to_quit = true;
     }
@@ -99,6 +99,7 @@ bool quit()
     return to_quit;
 }
 
+
 void process_user_inputs()
 {
     std::string user_selection{};
@@ -106,25 +107,61 @@ void process_user_inputs()
     std::vector<int> user_numbers_v;
 
     while (running) {
-
+        if (user_numbers_v.size() == 1)
+            std::cout << "\nYou have " << user_numbers_v.size() << " number in your list" << std::endl;
+        else
+            std::cout << "\nYou have " << user_numbers_v.size() << " numbers in your list" << std::endl;
         print_menu();
         user_selection = valid_menu_choice();
+        clear();
         while (running) {
 
+            //Allows the user to add numbers to the vector user_numbers_v
+            if (user_selection == "a" || user_selection == "A") {
+                if (user_numbers_v.size() < 10) {
+                    std::cout << "\nHow many numbers would you like to add? : ";
+                    int const total_user_numbers = valid_integer();
+                    if (total_user_numbers <= 10) {
+                        for (int i{ 1 }; i <= total_user_numbers; ++i) {
+                            std::cout << "\nEnter your " << i << ordinal_suffix(i) << " number to add: ";
+                            int user_numbers_item = valid_integer();
+                            user_numbers_v.push_back(user_numbers_item);
+                        }
+                        std::cout << "\n---------------------------------------" << std::endl;
+                        std::cout << "||    Numbers added successfully!    ||" << std::endl;
+                        std::cout << "---------------------------------------" << std::endl;
+                        break;
+                    }
+                    else
+                    {
+                        std::cout << "\nThe number you have entered exceeds the maximum list size! Try again." << std::endl;
+                    }
+                }
+                else
+                {
+                    std::cout << "\n---------------------------------------" << std::endl;
+                    std::cout << "||           *WARNING*               ||" << std::endl;
+                    std::cout << "||        List is too big!           ||" << std::endl;
+                    std::cout << "||    add numbers unsuccessful.      ||" << std::endl;
+                    std::cout << "---------------------------------------" << std::endl;
+                    break;
+                }
+            }
+
             //Prints each of the numbers the user entered into the console originally
-            if (user_selection == "p" || user_selection == "P") {
+        	if (user_selection == "p" || user_selection == "P") {
                 std::cout << "\nThe numbers you have stored in the list are : " << std::endl;
                 if (!user_numbers_v.empty()) {
-                    std::cout << "[";
+                    std::cout << "\n[";
                     for (int unsigned long long i{ 0 }; i < user_numbers_v.size(); i++) {
                         std::cout << " " << user_numbers_v[i];
                     }
                     std::cout << " ]" << std::endl;
                 }
                 else {
-                    std::cout << "Your list is empty, there's nothing to print." << std::endl;
+                    std::cout << "\nYour list is empty, there's nothing to print." << std::endl;
                 }
-                running = quit();
+                running = cont();
                 if (running == true)
                 {
                     clear();
@@ -132,23 +169,8 @@ void process_user_inputs()
                 }
             }
 
-            //Allows the user to add numbers to the vector user_numbers_v
-            else if (user_selection == "a" || user_selection == "A") {
-                std::cout << "\nHow many numbers would you like to add? : ";
-                int const total_user_numbers = valid_integer();
-                for (int i{ 1 }; i <= total_user_numbers; ++i) {
-                    std::cout << "\nEnter your " << i << ordinal_suffix(i) << " number to add: ";
-                    int user_numbers_item = valid_integer();
-                    user_numbers_v.push_back(user_numbers_item);
-                }
-                std::cout << "\nNumbers added successfully!" << std::endl;
-                std::cout << "\n---------------------------------------" << std::endl;
-                clear();
-                break;
-            }
-
             //Prints out the average of the numbers in the list
-            else if (user_selection == "m" || user_selection == "M") {
+            if (user_selection == "m" || user_selection == "M") {
 
                 if (!user_numbers_v.empty()) {
                     int unsigned long long total_numbers{};
@@ -159,9 +181,9 @@ void process_user_inputs()
                     std::cout << "The average of your numbers is : " << avg << std::endl;
                 }
                 else {
-                    std::cout << "Your list is empty, there's nothing to print." << std::endl;
+                    std::cout << "\nYour list is empty, there's nothing to print." << std::endl;
                 }
-                running = quit();
+                running = cont();
                 if (running == true)
                 {
                     clear();
@@ -170,10 +192,15 @@ void process_user_inputs()
             }
 
             //prints smallest number in the list
-            else if (user_selection == "s" || user_selection == "S") {
-                std::cout << "\nThe smallest number in your list is: ";
-                std::cout << *std::min_element(user_numbers_v.begin(), user_numbers_v.end()) << std::endl;
-                running = quit();
+            if (user_selection == "s" || user_selection == "S") {
+                if (!user_numbers_v.empty()) {
+                    std::cout << "\nThe smallest number in your list is: ";
+                    std::cout << *std::min_element(user_numbers_v.begin(), user_numbers_v.end()) << std::endl;
+                }
+                else {
+                    std::cout << "\nYour list is empty, there's nothing to print." << std::endl;
+                }
+                running = cont();
                 if (running == true)
                 {
                     clear();
@@ -182,10 +209,15 @@ void process_user_inputs()
             }
 
             //prints largest number in the list
-            else if (user_selection == "l" || user_selection == "L") {
-                std::cout << "\nThe largest number in your list is: ";
-                std::cout << *std::max_element(user_numbers_v.begin(), user_numbers_v.end()) << std::endl;
-                running = quit();
+            if (user_selection == "l" || user_selection == "L") {
+                if (!user_numbers_v.empty()) {
+                    std::cout << "\nThe largest number in your list is: ";
+                    std::cout << *std::max_element(user_numbers_v.begin(), user_numbers_v.end()) << std::endl;
+                }
+                else {
+                    std::cout << "\nYour list is empty, there's nothing to print." << std::endl;
+                }
+                running = cont();
                 if (running == true)
                 {
                     clear();
@@ -194,28 +226,25 @@ void process_user_inputs()
             }
 
             //Clears the list of all numbers unless the user says no
-            else if (user_selection == "c" || user_selection == "C") {
+            if (user_selection == "c" || user_selection == "C") {
                 std::cout << "\nAre you sure you would like to clear the list?" << std::endl;
                 std::cout << "\nIf yes press 'Y' or press 'N' to return to the menu : ";
-                user_selection = valid_yes_no_quit();
+                user_selection = valid_continue();
+                clear();
                 if (user_selection == "y" || user_selection == "Y") {
                     user_numbers_v.clear();
-                    std::cout << "\nList successfully cleared!" << std::endl;
                     std::cout << "\n---------------------------------------" << std::endl;
-                }
-                else if (user_selection == "n" || user_selection == "N") {
+                    std::cout << "||     List cleared successfully!    ||" << std::endl;
+                    std::cout << "---------------------------------------" << std::endl;
                     break;
                 }
-                running = quit();
-                if (running == true)
-                {
-                    clear();
+                else if (user_selection == "n" || user_selection == "N") {
                     break;
                 }
             }
 
             //Quits the program by breaking the loop
-            else if (user_selection == "q" || user_selection == "Q") {
+            if (user_selection == "q" || user_selection == "Q") {
                 running = false;
             }
         }
@@ -223,6 +252,7 @@ void process_user_inputs()
 }
 
 int main() {
+    std::cout << "\nWelcome to the LIST MANIPULATOR!" << std::endl;
     process_user_inputs();
     std::cout << "\nGoodbye!" << std::endl;
     return 0;
