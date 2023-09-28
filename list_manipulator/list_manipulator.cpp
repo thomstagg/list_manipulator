@@ -68,7 +68,7 @@ const char* ordinal_suffix(const int n)
     ord = ord % 10;
     if (ord > 3)
     {
-	    ord = 0;
+    	ord = 0;
     }
     return suffixes[ord];
 }
@@ -107,7 +107,6 @@ bool cont()
     return to_quit;
 }
 
-
 void process_user_inputs()
 {
     std::string user_selection{};
@@ -145,10 +144,7 @@ void process_user_inputs()
                         std::cout << "---------------------------------------" << std::endl;
                         break;
                     }
-                    else 
-                    {
-                        std::cout << "\nThe number you have entered exceeds the maximum list size! Try again." << std::endl;
-                    }
+                	std::cout << "\nThe number you have entered exceeds the maximum list size! Try again." << std::endl;
                 }
                 else
                 {
@@ -261,7 +257,7 @@ void process_user_inputs()
                     std::cout << "---------------------------------------" << std::endl;
                     break;
                 }
-                else if (user_selection == "n" || user_selection == "N") 
+                if (user_selection == "n" || user_selection == "N") 
                 {
                     break;
                 }
