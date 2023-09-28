@@ -184,11 +184,9 @@ void process_user_inputs()
                     break;
                 }
             }
-
             //Prints out the average of the numbers in the list
             if (user_selection == "m" || user_selection == "M") 
             {
-
                 if (!user_numbers_v.empty()) 
                 {
                     int unsigned long long total_numbers{};
